@@ -1,0 +1,21 @@
+meta {
+  name: Get With Payload
+  type: http
+  seq: 6
+}
+
+get {
+  url: http://localhost:8080/healthz
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id":"01"
+  }
+}
+
+body:multipart-form {
+  id: 01
+}
