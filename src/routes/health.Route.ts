@@ -6,11 +6,11 @@ const router = Router();
 router.get('/healthz',healthCheck);
 
 router.all('/healthz', (req, res) => {
-    res.status(405).json({ message: 'Method Not Allowed' });
+    res.status(405).send();
     });
 
 router.all('*', (req, res) => {
-    res.status(404).json({ message: 'Not Found' });
+    res.status(404).send();
     }
 );
 
