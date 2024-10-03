@@ -24,8 +24,6 @@ export const basicAuth = async (req: Request, res: Response, next: NextFunction)
   try {
     const user = await User.findOne({ where: { email } });
 
-    console.log("User",user);
-
     if (!user) {
       res.status(401).json({ error: 'Invalid credentials' });
       return;
@@ -33,17 +31,13 @@ export const basicAuth = async (req: Request, res: Response, next: NextFunction)
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    console.log("Is password valid",isPasswordValid); 
     if (!isPasswordValid) {
       res.status(401).json({ error: 'Invalid credentials' });
       return;
     }
-
-    console.log("User",user);
     req.user = user;
     next();
   } catch (error) {
-    console.error(error);
     res.status(503).json({ error: 'An unexpected error occurred, please try again later' });
   }
 };
