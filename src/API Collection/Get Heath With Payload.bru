@@ -5,15 +5,13 @@ meta {
 }
 
 get {
-  url: http://localhost:8080/healthz
-  body: json
+  url: http://localhost:8080/healthz?a=b
+  body: none
   auth: none
 }
 
-body:json {
-  {
-    "id":"01"
-  }
+query {
+  a: b
 }
 
 body:multipart-form {
