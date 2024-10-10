@@ -39,13 +39,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run migrations
-        env:
-          DATABASE_URL: postgres://${{ secrets.DB_USERNAME }}:${{ secrets.DB_PASSWORD }}@localhost:5432/${{ secrets.DB_NAME }}  # Use GitHub Secrets
-          PORT: ${{ secrets.PORT }} 
-        run: |
-          npx sequelize-cli db:migrate
-
       - name: Run tests
         env:
           DATABASE_URL: postgres://${{ secrets.DB_USERNAME }}:${{ secrets.DB_PASSWORD }}@localhost:5432/${{ secrets.DB_NAME }}  # Use GitHub Secrets
