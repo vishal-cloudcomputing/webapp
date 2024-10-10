@@ -1,15 +1,19 @@
 {
   "compilerOptions": {
-    "target": "es2016",   
-    "typeRoots": ["./node_modules/@types", "./src/@types"],
-    "module": "commonjs",                                
-    "esModuleInterop": true,                          
-    "forceConsistentCasingInFileNames": true,            
-    "strict": true,                                     
+    "target": "ES6",
+    "module": "CommonJS",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
     "skipLibCheck": true,
-    "baseUrl": "./",
-    "paths": {
-      "@config/*": ["src/config/*"]
-    }                             
-  }
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "jest.config.ts",
+    "node_modules"
+  ]
 }
