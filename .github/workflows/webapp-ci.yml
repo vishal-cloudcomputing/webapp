@@ -34,16 +34,15 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20.12.2'
 
       - name: Install dependencies
         run: npm install
 
       - name: Run tests
         env:
-          DATABASE_URL: postgres://${{ secrets.DB_USERNAME }}:${{ secrets.DB_PASSWORD }}@localhost:5432/${{ secrets.DB_NAME }}
-          DB_HOST: localhost                  
-          DB_PORT: '5432'                    
+          DB_HOST: ${{ secrets.DB_HOST }}                
+          DB_PORT: ${{ secrets.DB_PORT }}                   
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
@@ -55,11 +54,23 @@ jobs:
 
       - name: Start the application
         env:
-          DATABASE_URL: postgres://${{ secrets.DB_USERNAME }}:${{ secrets.DB_PASSWORD }}@localhost:5432/${{ secrets.DB_NAME }}
-          DB_HOST: localhost                  
-          DB_PORT: '5432'              
+          DB_HOST:  ${{ secrets.DB_HOST }}                  
+          DB_PORT:  ${{ secrets.DB_PORT }}             
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
           PORT: ${{ secrets.PORT }}
-        run: npm start
+        run: |
+          npm start &
+          echo "Waiting for the application to start..."
+          sleep 10  # Adjust sleep time based on how long your app needs to start
+
+          echo "Checking health endpoint..."
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/healthz)
+
+          if [ "$RESPONSE" -eq 200 ]; then
+            echo "Health check passed with status 200!"
+            exit 0
+          else
+            echo "Health check failed with status $RESPONSE"
+            exit 1
