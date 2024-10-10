@@ -1,4 +1,4 @@
-name: Cloud-Native Web Application CI/CD
+name: Webapp CI
 
 on:
   push:
