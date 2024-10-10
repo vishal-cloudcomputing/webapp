@@ -42,12 +42,12 @@ jobs:
       - name: Run tests
         env:
           DATABASE_URL: postgres://${{ secrets.DB_USERNAME }}:${{ secrets.DB_PASSWORD }}@localhost:5432/${{ secrets.DB_NAME }}
-          DB_HOST: localhost                  # Assuming the service is running on localhost
-          DB_PORT: '5432'                     # Default PostgreSQL port
+          DB_HOST: localhost                  
+          DB_PORT: '5432'                    
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
-          PORT: ${{ secrets.PORT }}            # If you have a PORT secret
+          PORT: ${{ secrets.PORT }}           
         run: npm test
 
       - name: Build the application
@@ -55,5 +55,11 @@ jobs:
 
       - name: Start the application
         env:
-          PORT: ${{ secrets.PORT }} 
+          DATABASE_URL: postgres://${{ secrets.DB_USERNAME }}:${{ secrets.DB_PASSWORD }}@localhost:5432/${{ secrets.DB_NAME }}
+          DB_HOST: localhost                  
+          DB_PORT: '5432'              
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          PORT: ${{ secrets.PORT }}
         run: npm start
