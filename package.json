@@ -5,9 +5,7 @@
   "main": "./src/index.ts",
   "scripts": {
     "test": "jest",
-    "dev": "nodemon",
-    "start": "node ./dist/index.js",
-    "build": "tsc"
+    "dev": "nodemon"
   },
   "author": "Vishal Prasanna",
   "license": "MIT",
