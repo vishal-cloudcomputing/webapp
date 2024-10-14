@@ -59,7 +59,7 @@ describe('User Controller and Routes', () => {
           password: testPassword,
         });
 
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(201);
       expect(response.body).toMatchObject({
         id: mockUser.id,
         email: mockUser.email,
