@@ -53,9 +53,6 @@ jobs:
       - name: Build application artifact
         run: |
           npm run build
-          # Ensure the artifact is generated in the 'dist' folder
-          mkdir -p dist
-          cp -R dist/* ./dist/ # Adjust this line as needed
 
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v2
