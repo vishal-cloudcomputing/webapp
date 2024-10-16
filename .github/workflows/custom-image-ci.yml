@@ -53,6 +53,11 @@ jobs:
       - name: Build application artifact
         run: |
           npm run build
+          
+      - name: Packer init (Initialize Packer)
+        working-directory: infra
+        run: |
+          packer init .
 
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v2
