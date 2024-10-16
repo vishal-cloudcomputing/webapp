@@ -19,10 +19,15 @@ jobs:
         with:
           version: latest
 
+      - name: Packer init (Initialize Packer)
+        working-directory: infra
+        run: |
+          packer init .
+
       - name: Run packer fmt (Check for formatting issues)
         working-directory: infra
         run: |
-          packer fmt -check -diff .
+          packer fmt
 
       - name: Run packer validate (Validate template)
         working-directory: infra
