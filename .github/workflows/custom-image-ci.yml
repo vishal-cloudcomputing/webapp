@@ -1,12 +1,8 @@
 name: Build Packer Custom Image
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
-    branches:
-      - main
+    types: [closed]
 
 jobs:
   build_custom_image:
@@ -53,7 +49,7 @@ jobs:
       - name: Build application artifact
         run: |
           npm run build
-          
+
       - name: Packer init (Initialize Packer)
         working-directory: infra
         run: |
