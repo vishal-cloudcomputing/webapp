@@ -60,7 +60,7 @@ source "amazon-ebs" "ubuntu" {
   source_ami                  = var.source_ami
   instance_type               = var.instance_type
   ssh_username                = var.ssh_username
-  ami_name                    = var.ami_name+"-{{timestamp}}"
+  ami_name                    = var.ami_name + "-{{timestamp}}"
   associate_public_ip_address = true
 
   launch_block_device_mappings {
@@ -74,10 +74,10 @@ build {
   sources = ["source.amazon-ebs.ubuntu"]
 
   provisioner "file" {
-    source      = "./my_app_service.service"  
-    destination = "/tmp/my_app_service.service"  
+    source      = "./my_app_service.service"
+    destination = "/tmp/my_app_service.service"
   }
-  
+
   provisioner "shell" {
     environment_vars = [
       "DEBIAN_FRONTEND=noninteractive",
@@ -85,7 +85,7 @@ build {
     ]
 
     inline = [
-    "echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections",
+      "echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections",
       # Create the group and user
       "echo 'Creating group and user...'",
       "sudo groupadd csye6225",
@@ -99,7 +99,7 @@ build {
       # Move the service file to the appropriate location
       "echo 'Moving service file...'",
       "sudo mv /tmp/my_app_service.service /etc/systemd/system/${var.service_name}.service",
-      "sudo chown root:root /etc/systemd/system/${var.service_name}.service",  # Correct ownership for service file
+      "sudo chown root:root /etc/systemd/system/${var.service_name}.service", # Correct ownership for service file
 
       # Update and install PostgreSQL
       "echo 'Installing PostgreSQL...'",
