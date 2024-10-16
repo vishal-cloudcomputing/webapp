@@ -1,0 +1,30 @@
+name: Packer Template Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  packer_validation:
+    name: Packer Validation Pipeline
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up HashiCorp Packer
+        uses: hashicorp/setup-packer@v1
+        with:
+          version: latest
+
+      - name: Run packer fmt (Check for formatting issues)
+        working-directory: infra
+        run: |
+          packer fmt -check -diff .
+
+      - name: Run packer validate (Validate template)
+        working-directory: infra
+        run: |
+          packer validate .
