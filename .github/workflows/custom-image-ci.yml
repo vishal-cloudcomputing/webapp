@@ -66,17 +66,14 @@ jobs:
 
       - name: Build Packer Custom Image
         working-directory: infra
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           packer build \
           -var "app_path=./dist" \
           -var "service_name=my_app_service" \
-          -var "aws_region=us-east-1" \
-          -var "source_ami=ami-0866a3c8686eaeeba" \
+          -var "aws_region=${{ secrets.AWS_REGION }}" \
+          -var "source_ami=${{ secrets.SOURCE_AMI }}" \
           -var "ami_name=csye6225-ami-{{timestamp}}" \
           -var "instance_type=t2.small" \
-          -var "subnet_id=subnet-0d931cdafd933baac" \
+          -var "subnet_id=${{ secrets.SUBNET_ID }}" \
           -var "ssh_username=ubuntu" \
           aws.pkr.hcl
