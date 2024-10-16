@@ -1,0 +1,18 @@
+[Unit]
+Description=Node.js Application Service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/node /home/ubuntu/my_app/index.js
+WorkingDirectory=/home/ubuntu/my_app
+Restart=always
+User=csye6225
+Group=csye6225
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=my-nodejs-app
+
+[Install]
+WantedBy=multi-user.target
