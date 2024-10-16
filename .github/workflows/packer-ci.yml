@@ -27,7 +27,7 @@ jobs:
       - name: Run packer fmt (Check for formatting issues)
         working-directory: infra
         run: |
-          packer fmt
+          packer fmt -check -diff -recursive .
 
       - name: Run packer validate (Validate template)
         working-directory: infra
