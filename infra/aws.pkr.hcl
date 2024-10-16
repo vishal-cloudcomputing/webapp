@@ -13,7 +13,7 @@ variable "source_ami" {
 variable "ami_name" {
   description = "Name of the custom image"
   type        = string
-  default     = "csye6225-ami"
+  default     = "csye6225-ami-{{timestamp}}"
 }
 
 variable "instance_type" {
@@ -60,7 +60,7 @@ source "amazon-ebs" "ubuntu" {
   source_ami                  = var.source_ami
   instance_type               = var.instance_type
   ssh_username                = var.ssh_username
-  ami_name                    = var.ami_name + "-{{timestamp}}"
+  ami_name                    = var.ami_name
   associate_public_ip_address = true
 
   launch_block_device_mappings {
