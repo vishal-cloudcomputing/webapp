@@ -26,6 +26,9 @@ jobs:
           --health-retries=5
 
     steps:
+      - name: Zip the application artifacts
+        run: zip -r ../webapp.zip .
+        
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -51,8 +54,6 @@ jobs:
         run: |
           npm run build
 
-      - name: Zip the application artifacts
-        run: zip -r ../webapp.zip .
 
       - name: Packer init (Initialize Packer)
         working-directory: infra
