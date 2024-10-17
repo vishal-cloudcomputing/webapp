@@ -51,6 +51,9 @@ jobs:
         run: |
           npm run build
 
+      - name: Zip the application artifacts
+        run: zip -r ../webapp.zip ./dist
+        
       - name: Packer init (Initialize Packer)
         working-directory: infra
         run: |
