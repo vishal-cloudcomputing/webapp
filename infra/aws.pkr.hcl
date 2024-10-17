@@ -186,15 +186,15 @@ build {
       "sudo npm install -g ts-node",
 
       # Create the .env file and add environment variables
-      "sudo touch ${var.app_path}/webapp/ .env",
+      "sudo touch ${var.app_path}/ .env",
       "echo 'ENV'",
       "ls -al ${var.app_path}", # List all files in long format
-      "echo 'PORT=${var.port}' | sudo tee -a ${var.app_path}/webapp/.env",
-      "echo 'DB_HOST=${var.db_host}' | sudo tee -a ${var.app_path}/webapp/.env",
-      "echo 'DB_PORT=${var.db_port}' | sudo tee -a ${var.app_path}/webapp/.env",
-      "echo 'DB_USERNAME=${var.db_username}' | sudo tee -a ${var.app_path}/webapp/.env",
-      "echo 'DB_PASSWORD=${var.db_password}' | sudo tee -a ${var.app_path}/webapp/.env",
-      "echo 'DB_NAME=${var.db_name}' | sudo tee -a ${var.app_path}/webapp/.env",
+      "echo 'PORT=${var.port}' | sudo tee -a ${var.app_path}/.env",
+      "echo 'DB_HOST=${var.db_host}' | sudo tee -a ${var.app_path}/.env",
+      "echo 'DB_PORT=${var.db_port}' | sudo tee -a ${var.app_path}/.env",
+      "echo 'DB_USERNAME=${var.db_username}' | sudo tee -a ${var.app_path}/.env",
+      "echo 'DB_PASSWORD=${var.db_password}' | sudo tee -a ${var.app_path}/.env",
+      "echo 'DB_NAME=${var.db_name}' | sudo tee -a ${var.app_path}/.env",
       #printing the .env file
       "cat ${var.app_path}/webapp/.env",
 
