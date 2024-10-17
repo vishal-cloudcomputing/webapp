@@ -111,5 +111,5 @@ jobs:
           # Share the AMI with the demo account
           aws ec2 modify-image-attribute \
             --image-id "$AMI_ID" \
-            --launch-permission "Add=[{\"UserId\":\"${{ secrets.DEMO_ID }}\"}]" \
+            --launch-permission '{"Add":[{"UserId":"${{ secrets.DEMO_ACCOUNT_ID }}"}]}' \
             --region "${{ secrets.aws_region_ci }}"
