@@ -33,7 +33,7 @@ jobs:
         run: zip -r ../webapp.zip .
 
       - name: Upload webapp.zip as an artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: webapp
           path: ../webapp.zip
