@@ -120,8 +120,6 @@ build {
   provisioner "file" {
     source      = "../webapp.zip"
     destination = "/tmp/my_app.zip"
-    only        = ["amazon-ebs"] # Ensure this is only executed on build
-    when        = var.skip_file_provisioner ? "never" : "always"
   }
 
   provisioner "file" {
@@ -166,6 +164,8 @@ build {
       "echo 'Installing unzip...'",
       "sudo apt install -y unzip",
       # Unzip the application and move files to the application directory
+      "echo 'Listing files in /tmp...'",
+      "ls -al /tmp",
       "sudo unzip /tmp/my_app.zip -d ${var.app_path}",
       "sudo chown -R csye6225:csye6225 ${var.app_path}",
 
