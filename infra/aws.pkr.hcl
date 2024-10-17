@@ -131,12 +131,12 @@ build {
       # Create the group and user
       "echo 'Creating group and user...'",
       "sudo groupadd csye6225",
-     "sudo useradd -r -g csye6225 -s /usr/sbin/nologin csye6225",
+      "sudo useradd -r -g csye6225 -s /usr/sbin/nologin csye6225",
 
       # Ensure the application path exists
       "echo 'Ensuring application path exists...'",
       "sudo mkdir -p ${var.app_path}",
-     "sudo chown -R csye6225:csye6225 ${var.app_path}",
+      "sudo chown -R csye6225:csye6225 ${var.app_path}",
 
       # Move the service file
       "echo 'Moving service file...'",
