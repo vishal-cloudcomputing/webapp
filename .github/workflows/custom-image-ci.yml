@@ -2,13 +2,11 @@ name: Build Packer Custom Image
 
 on:
    pull_request:
-      branches:
-        - main
-     #types: [closed]
+     types: [closed]
 
 jobs:
   build_custom_image:
-   # if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true
     name: Build Custom Image Pipeline
     runs-on: ubuntu-latest
 
