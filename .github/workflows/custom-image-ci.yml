@@ -2,11 +2,13 @@ name: Build Packer Custom Image
 
 on:
    pull_request:
-    branches:
-      - main
+      branches:
+        - main
+     #types: [closed]
 
 jobs:
   build_custom_image:
+   # if: github.event.pull_request.merged == true
     name: Build Custom Image Pipeline
     runs-on: ubuntu-latest
 
@@ -75,7 +77,7 @@ jobs:
 
       - name: Build Packer Custom Image
         working-directory: infra
-        id: packer_build  # Add an ID for this step to reference its outputs
+        id: packer_build  
         run: |
           # Run Packer build and capture output
           packer build -machine-readable \
@@ -112,6 +114,6 @@ jobs:
           else
             aws ec2 modify-image-attribute \
               --image-id "$AMI_ID" \
-              --launch-permission "Add=[{\"UserId\":\"${{ secrets.DEMO_ID }}\"}]" \
+              --launch-permission=Add=[{"UserId":"${{ secrets.DEMO_ID }}"}] \
               --region "${{ secrets.aws_region_ci }}"
           fi
