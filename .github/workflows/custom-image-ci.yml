@@ -105,11 +105,13 @@ jobs:
       - name: Share AMI with Demo Account
         if: steps.packer_build.outputs.AMI_CREATED == 'true'
         run: |
-          # Retrieve the AMI ID from the output
           AMI_ID=${{ steps.packer_build.outputs.ami_id }}
 
-          # Share the AMI with the demo account
-          aws ec2 modify-image-attribute \
-            --image-id "$AMI_ID" \
-            --launch-permission '{"Add":[{"UserId":"${{ secrets.DEMO_ACCOUNT_ID }}"}]}' \
-            --region "${{ secrets.aws_region_ci }}"
+          if [ -z "${{ secrets.DEMO_ID }}" ]; then
+            echo "DEMO_ID is not set. Skipping sharing the AMI."
+          else
+            aws ec2 modify-image-attribute \
+              --image-id "$AMI_ID" \
+              --launch-permission "Add=[{\"UserId\":\"${{ secrets.DEMO_ID }}\"}]" \
+              --region "${{ secrets.aws_region_ci }}"
+          fi
