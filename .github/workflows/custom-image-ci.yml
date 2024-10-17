@@ -77,7 +77,7 @@ jobs:
         working-directory: infra
         run: |
           packer build \
-          -var "app_path=./dist" \
+          -var "app_path=/home/csye6225/my_app" \
           -var "service_name=${{ secrets.service_name }}" \
           -var "aws_region=${{ secrets.aws_region_ci }}" \
           -var "source_ami=${{ secrets.source_ami }}" \
