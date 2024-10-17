@@ -83,6 +83,13 @@ variable "db_name" {
   default     = "cloud"
 }
 
+variable "skip_file_provisioner" {
+  type    = bool
+  default = false
+}
+
+
+
 packer {
   required_plugins {
     amazon = {
@@ -113,6 +120,8 @@ build {
   provisioner "file" {
     source      = "../webapp.zip"
     destination = "/tmp/my_app.zip"
+    only        = ["amazon-ebs"] # Ensure this is only executed on build
+    when        = var.skip_file_provisioner ? "never" : "always"
   }
 
   provisioner "file" {
