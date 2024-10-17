@@ -22,10 +22,11 @@ variable "instance_type" {
   default     = "t2.small"
 }
 
+
 variable "app_path" {
   description = "Path where the application artifacts are stored"
   type        = string
-  default     = "/home/ubuntu/my_app"
+  default     = "/home/csye6225/my_app"
 }
 
 variable "service_name" {
@@ -44,6 +45,42 @@ variable "ssh_username" {
   description = "The SSH username for the custom image"
   type        = string
   default     = "ubuntu"
+}
+
+variable "port" {
+  description = "Port the application will run on"
+  type        = string
+  default     = "8080"
+}
+
+variable "db_host" {
+  description = "Database host"
+  type        = string
+  default     = "localhost"
+}
+
+variable "db_port" {
+  description = "Database port"
+  type        = string
+  default     = "5432"
+}
+
+variable "db_username" {
+  description = "Database username"
+  type        = string
+  default     = "postgres"
+}
+
+variable "db_password" {
+  description = "Database password"
+  type        = string
+  default     = "root@123"
+}
+
+variable "db_name" {
+  description = "Database name"
+  type        = string
+  default     = "cloud"
 }
 
 packer {
@@ -74,6 +111,11 @@ build {
   sources = ["source.amazon-ebs.ubuntu"]
 
   provisioner "file" {
+    source      = "../webapp.zip"
+    destination = "/tmp/my_app.zip"
+  }
+
+  provisioner "file" {
     source      = "./my_app_service.service"
     destination = "/tmp/my_app_service.service"
   }
@@ -96,10 +138,10 @@ build {
       "sudo mkdir -p ${var.app_path}",
       "sudo chown -R csye6225:csye6225 ${var.app_path}",
 
-      # Move the service file to the appropriate location
+      # Move the service file
       "echo 'Moving service file...'",
       "sudo mv /tmp/my_app_service.service /etc/systemd/system/${var.service_name}.service",
-      "sudo chown root:root /etc/systemd/system/${var.service_name}.service", # Correct ownership for service file
+      "sudo chown root:root /etc/systemd/system/${var.service_name}.service",
 
       # Update and install PostgreSQL
       "echo 'Installing PostgreSQL...'",
@@ -110,10 +152,67 @@ build {
       "sudo systemctl enable postgresql",
       "sudo systemctl start postgresql",
 
+
+      # Install unzip
+      "echo 'Installing unzip...'",
+      "sudo apt install -y unzip",
+      # Unzip the application and move files to the application directory
+      "echo 'Listing files in /tmp...'",
+      "ls -al /tmp",
+      "sudo unzip /tmp/my_app.zip -d ${var.app_path}",
+      "sudo chown -R csye6225:csye6225 ${var.app_path}",
+
+      # Install Node.js
+      "echo 'Installing Node.js...'",
+      "curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -",
+      "sudo apt install -y nodejs",
+      "node -v", # Verify Node.js version
+      "npm -v",  # Verify npm version,
+
+      # Install the application dependencies
+      "echo 'Current path: ' $(pwd)", # Echo the current working directory
+      "echo 'Listing files in the application directory...'",
+      "ls -al ${var.app_path}", # List all files in long format
+      "echo 'Installing application dependencies...'",
+      "cd ${var.app_path}/",
+      "sudo npm install",
+      "sudo npm install -g ts-node",
+
+      # Create the .env file and add environment variables
+      "sudo touch ${var.app_path}/ .env",
+      "echo 'ENV'",
+      "ls -al ${var.app_path}", # List all files in long format
+      "echo 'PORT=${var.port}' | sudo tee -a ${var.app_path}/.env",
+      "echo 'DB_HOST=${var.db_host}' | sudo tee -a ${var.app_path}/.env",
+      "echo 'DB_PORT=${var.db_port}' | sudo tee -a ${var.app_path}/.env",
+      "echo 'DB_USERNAME=${var.db_username}' | sudo tee -a ${var.app_path}/.env",
+      "echo 'DB_PASSWORD=${var.db_password}' | sudo tee -a ${var.app_path}/.env",
+      "echo 'DB_NAME=${var.db_name}' | sudo tee -a ${var.app_path}/.env",
+      #printing the .env file
+
+
+
+      # Create the PostgreSQL user and database
+      "sudo -u postgres psql -c \"ALTER USER ${var.db_username} WITH PASSWORD '${var.db_password}';\"",
+      "sudo -u postgres psql -c \"CREATE DATABASE ${var.db_name};\"",
+      "sudo -u postgres psql -c \"GRANT ALL PRIVILEGES ON DATABASE ${var.db_name} TO ${var.db_username};\"",
+
       # Reload and enable the systemd service
       "echo 'Enabling and starting the application service...'",
       "sudo systemctl daemon-reload",
       "sudo systemctl enable ${var.service_name}.service"
     ]
   }
+
+  provisioner "shell" {
+    inline = [
+      "sudo apt-get update",
+      "sudo apt-get remove -y git",
+      "sudo apt-get autoremove -y",
+      "sudo apt-get clean",
+      "sudo rm -rf /usr/bin/git*",
+      "sudo rm -rf /usr/lib/git-core"
+    ]
+  }
 }
+
