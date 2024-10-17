@@ -211,7 +211,7 @@ build {
     ]
   }
 
-    provisioner "shell" {
+  provisioner "shell" {
     inline = [
       "sudo apt-get update",
       "sudo apt-get remove -y git",
