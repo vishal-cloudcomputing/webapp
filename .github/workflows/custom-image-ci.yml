@@ -75,26 +75,41 @@ jobs:
 
       - name: Build Packer Custom Image
         working-directory: infra
+        id: packer_build  # Add an ID for this step to reference its outputs
         run: |
-          packer build \
-          -var "app_path=/home/csye6225/my_app" \
+          # Run Packer build and capture output
+          packer build -machine-readable \
+           -var "app_path=/home/csye6225/my_app" \
           -var "service_name=${{ secrets.service_name }}" \
           -var "aws_region=${{ secrets.aws_region_ci }}" \
           -var "source_ami=${{ secrets.source_ami }}" \
-          -var "ami_name=${{ secrets.ami_name}}" \
-          -var "instance_type=${{ secrets.instance_type}}" \
+          -var "ami_name=${{ secrets.ami_name }}" \
+          -var "instance_type=${{ secrets.instance_type }}" \
           -var "subnet_id=${{ secrets.subnet_id }}" \
           -var "ssh_username=${{ secrets.ssh_username }}" \
-          aws.pkr.hcl
+          aws.pkr.hcl | tee packer.log
+
+          # Extract the AMI ID from the log file
+          AMI_ID=$(awk -F, '/artifact,0,id/ {print $6}' packer.log | cut -d: -f2)
+
+          # Check if AMI_ID is not empty and set outputs
+          if [ -n "$AMI_ID" ]; then
+            echo "New AMI created: $AMI_ID"
+            echo "ami_id=$AMI_ID" >> $GITHUB_OUTPUT
+            echo "AMI_CREATED=true" >> $GITHUB_OUTPUT
+          else
+            echo "No new AMI was created"
+            echo "AMI_CREATED=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Share AMI with Demo Account
-        if: success() 
+        if: steps.packer_build.outputs.AMI_CREATED == 'true'
         run: |
-          # Retrieve the AMI ID from the output of the Packer build
-          AMI_ID=$(echo "${{ steps.packer_build.outputs.ami_id }}" | tr -d '\n')
+          # Retrieve the AMI ID from the output
+          AMI_ID=${{ steps.packer_build.outputs.ami_id }}
 
           # Share the AMI with the demo account
           aws ec2 modify-image-attribute \
             --image-id "$AMI_ID" \
-            --launch-permission "Add=[{UserId="${{ secrets.DEMO_ID }}"}]" \
+            --launch-permission "Add=[{\"UserId\":\"${{ secrets.DEMO_ID }}\"}]" \
             --region "${{ secrets.aws_region_ci }}"
