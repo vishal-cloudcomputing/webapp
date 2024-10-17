@@ -210,5 +210,16 @@ build {
       "sudo systemctl enable ${var.service_name}.service"
     ]
   }
+
+    provisioner "shell" {
+    inline = [
+      "sudo apt-get update",
+      "sudo apt-get remove -y git",
+      "sudo apt-get autoremove -y",
+      "sudo apt-get clean",
+      "sudo rm -rf /usr/bin/git*",
+      "sudo rm -rf /usr/lib/git-core"
+    ]
+  }
 }
 
