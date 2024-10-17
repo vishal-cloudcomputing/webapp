@@ -31,7 +31,13 @@ jobs:
 
       - name: Zip the application artifacts
         run: zip -r ../webapp.zip .
-        
+
+      - name: Upload webapp.zip as an artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: webapp
+          path: ../webapp.zip
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
