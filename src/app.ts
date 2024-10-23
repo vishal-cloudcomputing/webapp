@@ -14,7 +14,7 @@ connectDb().catch((err) => {
 });
 
 
-app.use('/v2', userRoutes);
+app.use('/v1', userRoutes);
 app.use('/', healthRoutes);
 
 app.get('/test', (req, res) => {

@@ -35,7 +35,7 @@ describe('User Controller and Routes', () => {
   afterAll(async () => {
     await mockSequelize.close();
   });
-  describe('POST /v2/user/', () => {
+  describe('POST /v1/user/', () => {
     it('should create a new user and return 201 status', async () => {
       const mockUser = {
         id: 1,
@@ -51,7 +51,7 @@ describe('User Controller and Routes', () => {
       (bcrypt.hash as jest.Mock).mockResolvedValue('hashedPassword');
 
       const response = await request(app)
-        .post('/v2/user/')
+        .post('/v1/user/')
         .send({
           email: testEmail,
           first_name: 'John',
@@ -72,7 +72,7 @@ describe('User Controller and Routes', () => {
     });
   });
 
-  describe('GET /v2/user/self', () => {
+  describe('GET /v1/user/self', () => {
     it('should return user information with 200 status', async () => {
       const mockUser = {
         id: 1,
@@ -88,7 +88,7 @@ describe('User Controller and Routes', () => {
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
 
       const response = await request(app)
-        .get('/v2/user/self')
+        .get('/v1/user/self')
         .set('Authorization', `Basic ${base64Credentials}`);
 
       expect(response.status).toBe(200);
@@ -108,7 +108,7 @@ describe('User Controller and Routes', () => {
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
       const response = await request(app)
-        .get('/v2/user/self')
+        .get('/v1/user/self')
         .set('Authorization', `Basic ${base64Credentials}`);
 
       expect(response.status).toBe(401);
@@ -119,7 +119,7 @@ describe('User Controller and Routes', () => {
       (User.findOne as jest.Mock).mockResolvedValue(null);
 
       const response = await request(app)
-        .get('/v2/user/self')
+        .get('/v1/user/self')
         .set('Authorization', `Basic ${base64Credentials}`);
 
       expect(response.status).toBe(401);
@@ -127,7 +127,7 @@ describe('User Controller and Routes', () => {
     });
   });
 
-  describe('PUT /v2/user/self', () => {
+  describe('PUT /v1/user/self', () => {
     it('should update user information and return 204 status', async () => {
       const updatedUserData = {
         first_name: 'Jane',
@@ -147,7 +147,7 @@ describe('User Controller and Routes', () => {
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
 
       const response = await request(app)
-        .put('/v2/user/self')
+        .put('/v1/user/self')
         .send(updatedUserData)
         .set('Authorization', `Basic ${base64Credentials}`);
 
@@ -168,7 +168,7 @@ describe('User Controller and Routes', () => {
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
 
       const response = await request(app)
-        .put('/v2/user/self')
+        .put('/v1/user/self')
         .send({})
         .set('Authorization', `Basic ${base64Credentials}`);
 
@@ -189,7 +189,7 @@ describe('User Controller and Routes', () => {
         (bcrypt.compare as jest.Mock).mockResolvedValue(true);
       
         const response = await request(app)
-          .put('/v2/user/self')
+          .put('/v1/user/self')
           .send({ account_updated: new Date() })
           .set('Authorization', `Basic ${base64Credentials}`);
       
@@ -202,7 +202,7 @@ describe('User Controller and Routes', () => {
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
       const response = await request(app)
-        .put('/v2/user/self')
+        .put('/v1/user/self')
         .send({ first_name: 'Jane' })
         .set('Authorization', `Basic ${base64Credentials}`);
 

@@ -2,7 +2,8 @@ name: Build Packer Custom Image
 
 on:
    pull_request:
-     types: [closed]
+     branches:
+       - main
 
 jobs:
   build_custom_image:
