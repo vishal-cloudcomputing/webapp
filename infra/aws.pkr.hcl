@@ -128,6 +128,7 @@ build {
 
     inline = [
       "echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections",
+
       # Create the group and user
       "echo 'Creating group and user...'",
       "sudo groupadd csye6225",
@@ -143,19 +144,11 @@ build {
       "sudo mv /tmp/my_app_service.service /etc/systemd/system/${var.service_name}.service",
       "sudo chown root:root /etc/systemd/system/${var.service_name}.service",
 
-      # Update and install PostgreSQL
-      "echo 'Installing PostgreSQL...'",
-      "sudo apt update",
-      "sudo apt install -y postgresql postgresql-contrib",
-
-      # Enable and start PostgreSQL
-      "sudo systemctl enable postgresql",
-      "sudo systemctl start postgresql",
-
-
       # Install unzip
       "echo 'Installing unzip...'",
+      "sudo apt update",
       "sudo apt install -y unzip",
+
       # Unzip the application and move files to the application directory
       "echo 'Listing files in /tmp...'",
       "ls -al /tmp",
@@ -167,7 +160,7 @@ build {
       "curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -",
       "sudo apt install -y nodejs",
       "node -v", # Verify Node.js version
-      "npm -v",  # Verify npm version,
+      "npm -v",  # Verify npm version
 
       # Install the application dependencies
       "echo 'Current path: ' $(pwd)", # Echo the current working directory
@@ -177,32 +170,9 @@ build {
       "cd ${var.app_path}/",
       "sudo npm install",
       "sudo npm install -g ts-node",
-
-      # Create the .env file and add environment variables
-      "sudo touch ${var.app_path}/ .env",
-      "echo 'ENV'",
-      "ls -al ${var.app_path}", # List all files in long format
-      "echo 'PORT=${var.port}' | sudo tee -a ${var.app_path}/.env",
-      "echo 'DB_HOST=${var.db_host}' | sudo tee -a ${var.app_path}/.env",
-      "echo 'DB_PORT=${var.db_port}' | sudo tee -a ${var.app_path}/.env",
-      "echo 'DB_USERNAME=${var.db_username}' | sudo tee -a ${var.app_path}/.env",
-      "echo 'DB_PASSWORD=${var.db_password}' | sudo tee -a ${var.app_path}/.env",
-      "echo 'DB_NAME=${var.db_name}' | sudo tee -a ${var.app_path}/.env",
-      #printing the .env file
-
-
-
-      # Create the PostgreSQL user and database
-      "sudo -u postgres psql -c \"ALTER USER ${var.db_username} WITH PASSWORD '${var.db_password}';\"",
-      "sudo -u postgres psql -c \"CREATE DATABASE ${var.db_name};\"",
-      "sudo -u postgres psql -c \"GRANT ALL PRIVILEGES ON DATABASE ${var.db_name} TO ${var.db_username};\"",
-
-      # Reload and enable the systemd service
-      "echo 'Enabling and starting the application service...'",
-      "sudo systemctl daemon-reload",
-      "sudo systemctl enable ${var.service_name}.service"
     ]
   }
+
 
   provisioner "shell" {
     inline = [

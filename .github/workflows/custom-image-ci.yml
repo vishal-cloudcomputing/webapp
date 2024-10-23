@@ -27,16 +27,11 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Zip the application artifacts
+      - name: Compressing the project to the zip file
         run: zip -r webapp.zip .
 
-      - name: Upload webapp.zip as an artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: webapp
-          path: webapp.zip
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -54,6 +49,7 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
           PORT: ${{ secrets.PORT }}
+          SSL_OPTIONS: ${{ secrets.SSL_OPTIONS }}
         run: npm test
 
       - name: Build application artifact
