@@ -9,12 +9,12 @@ const sequelize = new Sequelize({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
 
-  dialectOptions: {
-    ssl: {
-      require:process.env.SSL_OPTIONS,
-      rejectUnauthorized: false, 
-    }
-  },
+  // dialectOptions: {
+  //   ssl: {
+  //     require:process.env.SSL_OPTIONS,
+  //     rejectUnauthorized: false, 
+  //   }
+  // },
 });
 
 
