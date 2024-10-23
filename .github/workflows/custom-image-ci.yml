@@ -28,16 +28,17 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Zip the application artifacts
-        run: zip -r webapp.zip .
+      - name: Create webapp directory
+        run: mkdir webapp
 
-      - name: Upload webapp.zip as an artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: webapp
-          path: webapp.zip
+      - name: Move project files into webapp folder
+        run: mv * webapp/ || true  # This moves all files into the webapp folder. The '|| true' handles the case where there are no files to move.
+
+      - name: Compressing the project to the zip file
+        run: zip -r webapp.zip webapp/
+
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
