@@ -7,7 +7,7 @@ on:
 
 jobs:
   build_custom_image:
-    if: github.event.pull_request.merged == true
+    # if: github.event.pull_request.merged == true
     name: Build Custom Image Pipeline
     runs-on: ubuntu-latest
 
@@ -55,6 +55,7 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
           PORT: ${{ secrets.PORT }}
+          SSL_OPTIONS: ${{ secrets.SSL_OPTIONS }}
         run: npm test
 
       - name: Build application artifact
