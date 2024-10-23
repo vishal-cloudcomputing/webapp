@@ -30,14 +30,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Create webapp directory
-        run: mkdir webapp
-
-      - name: Move project files into webapp folder
-        run: cp -r * webapp/ || true  # This moves all files into the webapp folder. The '|| true' handles the case where there are no files to move.
-
       - name: Compressing the project to the zip file
-        run: zip -r webapp.zip webapp/
+        run: zip -r webapp.zip .
 
 
       - name: Set up Node.js

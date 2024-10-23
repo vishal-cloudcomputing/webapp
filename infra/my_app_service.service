@@ -3,9 +3,9 @@ Description=Node.js Application Service
 After=network.target
 
 [Service]
-EnvironmentFile=/home/csye6225/my_app/webapp/.env
-ExecStart=/usr/bin/env ts-node -r dotenv/config /home/csye6225/my_app/webapp/src/index.ts
-WorkingDirectory=/home/csye6225/my_app/webapp
+EnvironmentFile=/home/csye6225/my_app/.env
+ExecStart=/usr/bin/env ts-node -r dotenv/config /home/csye6225/my_app/src/index.ts
+WorkingDirectory=/home/csye6225/my_app/
 Restart=always
 User=csye6225
 Group=csye6225

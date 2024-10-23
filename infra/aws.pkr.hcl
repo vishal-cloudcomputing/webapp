@@ -167,7 +167,7 @@ build {
       "echo 'Listing files in the application directory...'",
       "ls -al ${var.app_path}", # List all files in long format
       "echo 'Installing application dependencies...'",
-      "cd ${var.app_path}/webapp",
+      "cd ${var.app_path}/",
       "sudo npm install",
       "sudo npm install -g ts-node",
     ]
