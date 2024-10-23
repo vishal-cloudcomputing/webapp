@@ -34,7 +34,7 @@ jobs:
         run: mkdir webapp
 
       - name: Move project files into webapp folder
-        run: cp * webapp/ || true  # This moves all files into the webapp folder. The '|| true' handles the case where there are no files to move.
+        run: cp -r * webapp/ || true  # This moves all files into the webapp folder. The '|| true' handles the case where there are no files to move.
 
       - name: Compressing the project to the zip file
         run: zip -r webapp.zip webapp/
