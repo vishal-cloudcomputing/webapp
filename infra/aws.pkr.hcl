@@ -169,6 +169,7 @@ build {
       "echo 'Installing application dependencies...'",
       "cd ${var.app_path}/",
       "sudo npm install",
+      "sudo chown -R csye6225:csye6225 node_modules",
       "sudo npm install -g ts-node",
     ]
   }
