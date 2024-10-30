@@ -1,0 +1,20 @@
+meta {
+  name: Post Image
+  type: http
+  seq: 11
+}
+
+post {
+  url: http://localhost:8080/v1/user/self/pic
+  body: multipartForm
+  auth: basic
+}
+
+auth:basic {
+  username: sam123466@gmail.com
+  password: sunawala
+}
+
+body:multipart-form {
+  file: @file(/Users/vishalp/Downloads/Designer.jpeg)
+}
