@@ -12,6 +12,7 @@ router.head('/user/self', (req, res) => {
     }
 );
 
+//Testing for A5 demo
 router.get('/user/self', basicAuth, getUser);
 
 router.put('/user/self', basicAuth, updateUserValidator, updateUser);
