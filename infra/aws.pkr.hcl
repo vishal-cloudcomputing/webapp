@@ -173,7 +173,7 @@ build {
 
       # Install the Unified CloudWatch Agent
       "echo 'Installing CloudWatch Agent...'",
-      
+
       "sudo wget https://amazoncloudwatch-agent-${var.aws_region}.s3.${var.aws_region}.amazonaws.com/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb",
       "sudo dpkg -i -E amazon-cloudwatch-agent.deb || { echo 'CloudWatch Agent installation failed'; exit 1; }",
       "sudo systemctl enable amazon-cloudwatch-agent || { echo 'Failed to enable CloudWatch Agent'; exit 1; }",
