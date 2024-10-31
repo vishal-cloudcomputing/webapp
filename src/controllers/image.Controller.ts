@@ -31,9 +31,9 @@ export const uploadImage = async (req: Request, res: Response) => {
     const file = req?.file;
     const userId = req.user?.id;
 
-    if (!file || !userId) {
-      logger.error('File or user information is missing');
-      return res.status(400).json({ error: 'File or user information is missing.' });
+    if (!file) {
+      logger.error('Invalid file format');
+      return res.status(400).json({ error: 'Invalid file format' });
     }
 
     const existingImage = await timeDatabaseQuery(
