@@ -5,7 +5,16 @@ meta {
 }
 
 post {
-  url: 
-  body: none
+  url: http://localhost:8080/v1/user
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "email":"sam123466@gmail.com",
+    "first_name":"vishal",
+    "last_name":"prasanna",
+    "password":"sunawala"
+  }
 }

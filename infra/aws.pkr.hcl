@@ -22,7 +22,6 @@ variable "instance_type" {
   default     = "t2.small"
 }
 
-
 variable "app_path" {
   description = "Path where the application artifacts are stored"
   type        = string
@@ -47,41 +46,41 @@ variable "ssh_username" {
   default     = "ubuntu"
 }
 
-variable "port" {
-  description = "Port the application will run on"
-  type        = string
-  default     = "8080"
-}
+# variable "port" {
+#   description = "Port the application will run on"
+#   type        = string
+#   default     = "8080"
+# }
 
-variable "db_host" {
-  description = "Database host"
-  type        = string
-  default     = "localhost"
-}
+# variable "db_host" {
+#   description = "Database host"
+#   type        = string
+#   default     = "localhost"
+# }
 
-variable "db_port" {
-  description = "Database port"
-  type        = string
-  default     = "5432"
-}
+# variable "db_port" {
+#   description = "Database port"
+#   type        = string
+#   default     = "5432"
+# }
 
-variable "db_username" {
-  description = "Database username"
-  type        = string
-  default     = "postgres"
-}
+# variable "db_username" {
+#   description = "Database username"
+#   type        = string
+#   default     = "postgres"
+# }
 
-variable "db_password" {
-  description = "Database password"
-  type        = string
-  default     = "root@123"
-}
+# variable "db_password" {
+#   description = "Database password"
+#   type        = string
+#   default     = "root@123"
+# }
 
-variable "db_name" {
-  description = "Database name"
-  type        = string
-  default     = "cloud"
-}
+# variable "db_name" {
+#   description = "Database name"
+#   type        = string
+#   default     = "cloud"
+# }
 
 packer {
   required_plugins {
@@ -171,9 +170,16 @@ build {
       "sudo npm install",
       "sudo chown -R csye6225:csye6225 node_modules",
       "sudo npm install -g ts-node",
+
+      # Install the Unified CloudWatch Agent
+      "echo 'Installing CloudWatch Agent...'",
+
+      "sudo wget https://amazoncloudwatch-agent-${var.aws_region}.s3.${var.aws_region}.amazonaws.com/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb",
+      "sudo dpkg -i -E amazon-cloudwatch-agent.deb || { echo 'CloudWatch Agent installation failed'; exit 1; }",
+      "sudo systemctl enable amazon-cloudwatch-agent || { echo 'Failed to enable CloudWatch Agent'; exit 1; }",
+      "echo 'CloudWatch Agent installation and setup completed.'"
     ]
   }
-
 
   provisioner "shell" {
     inline = [
@@ -186,4 +192,3 @@ build {
     ]
   }
 }
-
