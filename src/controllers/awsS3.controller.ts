@@ -1,33 +1,31 @@
 import { deleteFile, upload } from "../utils/s3_bucket"; 
-import fileStream from "fs";
-import util from "util";
-
-const unlinking = util.promisify(fileStream.unlink);
+import logger from "../config/logger";
+import statsdClient from "../config/statsd"; 
 
 export const fileUpload = async (fileHere: { buffer: Buffer }, nameoffile: string) => {
+    const startTime = Date.now();
     try {
-        console.log(fileHere);
-
-        // Pass the buffer directly to the upload function
         const ans = await upload(fileHere.buffer, nameoffile);
-
-        // No need to unlink, since there’s no file on disk
+        logger.info("File uploaded successfully");
+        const duration = Date.now() - startTime; 
+        statsdClient.timing('S3.upload.duration', duration); 
         return ans;
     } catch (err) {
-        console.error("Unable to upload file", err);
+        logger.error("Unable to upload file", err);
         throw new Error("Unable to upload file"); 
-    }
-}
-;
-
-export const deletingfile = async (filename: string) => {
-    try {
-        const result = await deleteFile(filename);
-        return result;
-    } catch (error) {
-        console.error("Error in code:", error);
-        throw new Error("Error in code: " + error);
     }
 };
 
-
+export const deletingfile = async (filename: string) => {
+    const startTime = Date.now(); 
+    try {
+        const result = await deleteFile(filename);
+        logger.info("File deleted successfully");
+        const duration = Date.now() - startTime; 
+        statsdClient.timing('S3.delete.duration', duration); 
+        return result;
+    } catch (error) {
+        logger.error("Error in code: ", error);
+        throw new Error("Error in code: " + error);
+    }
+};

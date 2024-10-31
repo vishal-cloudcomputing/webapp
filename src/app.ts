@@ -4,6 +4,8 @@ import userRoutes from './routes/user.Route';
 import imageRoutes from './routes/image.Route';
 import { connectDb } from './config/database';
 import "dotenv/config";
+import { log } from 'console';
+import logger from './config/logger';
 
 
 const app = express();
@@ -11,6 +13,7 @@ app.use(express.json());
 
 
 connectDb().catch((err) => {
+  logger.error('Unable to connect to the database:', err);
   console.error('Failed to connect to the database:', err);
 });
 
