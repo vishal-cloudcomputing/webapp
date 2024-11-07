@@ -5,6 +5,7 @@ import { createUserValidator, updateUserValidator } from '../middlewares/userVal
 import handleValidationErrors from '../middlewares/handleValidationErrors';
 import logger from '../config/logger';
 import statsdClient from '../config/statsd';
+import { Request, Response, NextFunction } from 'express';
 
 const router = Router();
 
@@ -25,12 +26,11 @@ router.post(
     '/user/',
     createUserValidator,
     handleValidationErrors,
-    timeRequest('user', 'create', createUser),
-    () => {
+    (req: Request, res: Response, next: NextFunction) => {
         statsdClient.increment('User.create');
+        timeRequest('user', 'create', createUser)(req, res);
     }
 );
-
 
 router.head('/user/self', (req, res) => {
     logger.error(`Method ${req.method} not allowed`);
@@ -42,11 +42,12 @@ router.head('/user/self', (req, res) => {
 router.get(
     '/user/self',
     basicAuth,
-    timeRequest('user', 'get', getUser),
-    () => {
+    (req, res, next) => {
         statsdClient.increment('User.get');
+        timeRequest('user', 'get', getUser)(req, res);
     }
 );
+
 
 
 router.put(
