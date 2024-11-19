@@ -6,7 +6,7 @@ import timeDatabaseQuery from '../utils/timeDatabaseQuery';
 import { SNSClient, PublishCommand } from '@aws-sdk/client-sns';
 import { randomUUID } from 'crypto';
 
-const snsClient = new SNSClient({ region: process.env.AWS_Region});
+const snsClient = new SNSClient({ region: process.env.AWS_REGION }); // Ensure this is set in your environment variables
 const SNS_TOPIC_ARN = process.env.AWS_SNS_TOPIC_ARN; // Ensure this is set in your environment variables
 
 
