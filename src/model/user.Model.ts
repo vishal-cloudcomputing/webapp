@@ -10,6 +10,10 @@ class User extends Model {
   public email!: string;
   public readonly account_created!: Date;
   public account_updated!: Date;
+  public isVerified!: boolean;
+  public email_sent_at!: Date;
+  public token!: string;
+  public token_expiry!: Date;
 }
 
 User.init({
@@ -34,6 +38,19 @@ User.init({
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
+  },
+  isVerified: {
+    type:DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  email_sent_at: {
+    type: DataTypes.DATE,
+  },
+  token: {
+    type: DataTypes.STRING,
+  },
+  token_expiry: {
+    type: DataTypes.DATE,
   },
   account_created: {
     type: DataTypes.DATE,

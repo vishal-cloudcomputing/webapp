@@ -1,0 +1,15 @@
+meta {
+  name: Verify Token
+  type: http
+  seq: 15
+}
+
+get {
+  url: http://local:8080/v1/user/verify?token=5c9ff7f4-d7d9-4667-95df-549fd8810894
+  body: none
+  auth: none
+}
+
+query {
+  token: 5c9ff7f4-d7d9-4667-95df-549fd8810894
+}

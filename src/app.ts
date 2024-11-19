@@ -4,7 +4,6 @@ import userRoutes from './routes/user.Route';
 import imageRoutes from './routes/image.Route';
 import { connectDb } from './config/database';
 import "dotenv/config";
-import { log } from 'console';
 import logger from './config/logger';
 
 

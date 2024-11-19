@@ -1,7 +1,7 @@
 import { S3} from 'aws-sdk';
 import 'dotenv/config';
 
-const bucketRegion = process.env.AWS_Region as string; 
+const bucketRegion = process.env.AWS_REGION as string; 
 const bucketName = process.env.AWS_Bucket_Name as string; 
 
 const s3Upload = new S3({

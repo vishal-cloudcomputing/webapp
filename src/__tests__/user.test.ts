@@ -4,6 +4,7 @@ import User from '../model/user.Model';
 import bcrypt from 'bcrypt';
 import { connectDb } from '../config/database';
 import mockSequelize  from '../config/mockdb';
+import { SNSClient, PublishCommand } from '@aws-sdk/client-sns';
 
 jest.mock('../model/user.Model', () => ({
   findOne: jest.fn(),
@@ -17,6 +18,15 @@ jest.mock('bcrypt', () => ({
   compare: jest.fn(),
   
 }));
+
+jest.mock('@aws-sdk/client-sns', () => {
+  return {
+    SNSClient: jest.fn().mockImplementation(() => ({
+      send: jest.fn().mockResolvedValue({}),
+    })),
+    PublishCommand: jest.fn(),
+  };
+});
 
 describe('User Controller and Routes', () => {
   const testEmail = 'test@example.com';
@@ -39,17 +49,26 @@ describe('User Controller and Routes', () => {
     it('should create a new user and return 201 status', async () => {
       const mockUser = {
         id: 1,
-        email: testEmail,
+        email: 'testemail@example.com',
         first_name: 'John',
         last_name: 'Doe',
         account_created: new Date().toISOString(),
         account_updated: new Date().toISOString(),
       };
-
+  
+      const testEmail = 'testemail@example.com';
+      const testPassword = 'password123';
+  
+      // Mock the methods
       (User.findOne as jest.Mock).mockResolvedValue(null);
       (User.create as jest.Mock).mockResolvedValue(mockUser);
       (bcrypt.hash as jest.Mock).mockResolvedValue('hashedPassword');
-
+  
+      // Set up environment variables for testing
+      process.env.DOMIN_NAME = 'http://localhost:8081';
+      process.env.SNS_TOPIC_ARN = 'mock-sns-topic-arn';
+  
+      // Make the POST request
       const response = await request(app)
         .post('/v1/user/')
         .send({
@@ -58,7 +77,8 @@ describe('User Controller and Routes', () => {
           last_name: 'Doe',
           password: testPassword,
         });
-
+  
+      // Assertions
       expect(response.status).toBe(201);
       expect(response.body).toMatchObject({
         id: mockUser.id,
