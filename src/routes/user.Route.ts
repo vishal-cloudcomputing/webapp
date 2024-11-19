@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createUser, updateUser, getUser } from '../controllers/user.Controller';
+import { createUser, updateUser, getUser,verifyUser } from '../controllers/user.Controller';
 import { basicAuth } from '../middlewares/auth';
 import { createUserValidator, updateUserValidator } from '../middlewares/userValidation';
 import handleValidationErrors from '../middlewares/handleValidationErrors';
@@ -48,6 +48,11 @@ router.get(
     }
 );
 
+router.get('/user/verify', (req, res) => {
+    statsdClient.increment('User.verify');
+    timeRequest('user', 'verify', verifyUser)(req, res); 
+}
+);
 
 
 router.put(

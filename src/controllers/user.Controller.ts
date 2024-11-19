@@ -3,6 +3,12 @@ import bcrypt from 'bcrypt';
 import User from '../model/user.Model';
 import logger from '../config/logger';
 import timeDatabaseQuery from '../utils/timeDatabaseQuery'; 
+import { SNSClient, PublishCommand } from '@aws-sdk/client-sns';
+import { randomUUID } from 'crypto';
+
+const snsClient = new SNSClient({ region: process.env.AWS_Region});
+const SNS_TOPIC_ARN = process.env.AWS_SNS_TOPIC_ARN; // Ensure this is set in your environment variables
+
 
 export const createUser = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -20,16 +26,47 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
 
     const bcryptPassword = await bcrypt.hash(password, 10);
 
+
+    const email_sent_at = new Date().toISOString();
+    const token = randomUUID();
+    const token_expiry = new Date(Date.now() + 2 * 60 * 1000); // 2 minutes from now
+
+    const verificationUrl = `${process.env.DOMIN_NAME}/v1/user/verify?token=${token}`;
     const newUser = await timeDatabaseQuery(
       async () => User.create({
         email,
         first_name,
         last_name,
         password: bcryptPassword,
+        email_sent_at,
+        token,
+        token_expiry,
       }),
       'createUser' 
     );
 
+     
+
+
+
+    const snsMessage = {
+      email: newUser.email,
+      first_name: newUser.first_name,
+      last_name: newUser.last_name,
+      verification_url: verificationUrl
+    };
+
+    // Publish message to SNS topic
+    await snsClient.send(
+      new PublishCommand({
+        TopicArn: SNS_TOPIC_ARN,
+        Message: JSON.stringify(snsMessage),
+      })
+    );
+
+    console.log('Verification email sent via SNS');
+    logger.info('Verification email sent via SNS');
+    
     logger.info('User created successfully');
     res.status(201).json({
       id: newUser.id,
@@ -38,8 +75,10 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
       last_name: newUser.last_name,
       account_created: newUser.account_created,
       account_updated: newUser.account_updated,
+     
     });
   } catch (error) {
+    console.log(error);
     logger.error('Error creating user:', error);
     res.status(503).json({ error: 'An unexpected error occurred, please try again later' });
   }
@@ -114,3 +153,50 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
     res.status(503).json({ error: 'An unexpected error occurred, please try again later' });
   }
 };
+
+export const verifyUser = async (req: Request, res: Response): Promise<void> => {
+  console.log(">>>>>>>>> inside verifyUser");
+
+  const token = req.query.token as string | undefined;
+  console.log(">>>>>>>>> token: ", token);
+
+  // Check if token is provided
+  if (!token) {
+    res.status(400).json({ error: "Invalid verification link" });
+    return;
+  }
+
+  try {
+    // Attempt to find the user with the given token
+    const user = await User.findOne({ where: { token: token } });
+
+    if (!user) {
+      res.status(400).json({ error: "Invalid verification token" });
+      return;
+    }
+
+    // Check if user is already verified
+    if (user.isVerified) {
+      res.status(400).json({ error: "User already verified" });
+      return;
+    }
+    const now = (): number => {
+      return Date.now();  // Returns the current timestamp in milliseconds
+    };
+
+    // Check if the verification token has expired
+    if (now() > user.token_expiry.getTime()) {
+      res.status(400).json({ error: "Verification token has expired" });
+      return;
+    }
+
+    // Set the user as verified and clear the verification token
+    user.isVerified = true;
+    await user.save();
+
+    res.json({ success: "User verified successfully" });
+  } catch (error) {
+    console.error("Error verifying user:", error);
+    res.status(503).json({ error: "An unexpected error occurred, please try again later" });
+  }
+};  
