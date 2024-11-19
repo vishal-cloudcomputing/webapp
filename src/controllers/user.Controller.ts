@@ -57,13 +57,20 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
     };
 
     // Publish message to SNS topic
-    if (!SNS_TOPIC_ARN) {
-    await snsClient.send(
-      new PublishCommand({
-        TopicArn: SNS_TOPIC_ARN,
-        Message: JSON.stringify(snsMessage),
-      })
-    );
+    try {
+      if (SNS_TOPIC_ARN) {
+        await snsClient.send(
+          new PublishCommand({
+            TopicArn: SNS_TOPIC_ARN,
+            Message: JSON.stringify(snsMessage),
+          })
+        );
+        logger.info('Verification email sent via SNS');
+      } else {
+        logger.warn('SNS_TOPIC_ARN not defined; skipping SNS message publishing.');
+      }
+    } catch (snsError) {
+      logger.error('Failed to send verification email via SNS:', snsError);
     }
 
     console.log('Verification email sent via SNS');
