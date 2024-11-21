@@ -95,6 +95,7 @@ jobs:
             echo "New AMI created: $AMI_ID"
             echo "ami_id=$AMI_ID" >> $GITHUB_OUTPUT
             echo "AMI_CREATED=true" >> $GITHUB_OUTPUT
+            echo "AMI_ID=$AMI_ID" >> $GITHUB_ENV
           else
             echo "No new AMI was created"
             echo "AMI_CREATED=false" >> $GITHUB_OUTPUT
