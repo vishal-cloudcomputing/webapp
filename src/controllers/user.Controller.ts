@@ -31,7 +31,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
     const token = randomUUID();
     const token_expiry = new Date(Date.now() + 2 * 60 * 1000); // 2 minutes from now
 
-    const verificationUrl = `${process.env.DOMIN_NAME}/v1/user/verify?token=${token}`;
+    const verificationUrl = `http://${process.env.DOMIN_NAME}/v1/user/verify?token=${token}`;
     const newUser = await timeDatabaseQuery(
       async () => User.create({
         email,
