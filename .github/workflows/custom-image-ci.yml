@@ -127,8 +127,8 @@ jobs:
           elif [ "${{ env.IS_DEMO_ENVIRONMENT }}" == "true" ]; then
             echo "ENVIRONMENTS=demo" >> $GITHUB_ENV
           else
-            echo "Error: No environment provided" >&2
-            exit 1
+            echo "No environments are ready yet. Exiting gracefully."
+            exit 0
           fi
 
       - name: Configure DEV account AWS credentials
