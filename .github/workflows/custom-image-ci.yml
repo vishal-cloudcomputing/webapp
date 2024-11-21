@@ -1,8 +1,8 @@
 name: Build Packer Custom Image
 
 on:
-   pull_request:
-      types: [closed]
+  pull_request:
+    types: [closed]
 
 jobs:
   build_custom_image:
@@ -87,6 +87,9 @@ jobs:
           # Extract the AMI ID from the log file
           AMI_ID=$(awk -F, '/artifact,0,id/ {print $6}' packer.log | cut -d: -f2)
 
+          # Echo AMI ID before processing further
+          echo "AMI ID before processing: $AMI_ID"
+
           # Check if AMI_ID is not empty and set outputs
           if [ -n "$AMI_ID" ]; then
             echo "New AMI created: $AMI_ID"
@@ -142,6 +145,7 @@ jobs:
       - name: Process dev environment
         if: ${{ env.ENVIRONMENTS == 'dev' || env.ENVIRONMENTS == 'dev,demo' }}
         run: |
+          echo "AMI_ID in dev process =${{ env.AMI_ID }}" >> $GITHUB_ENV
           echo "currently running in Dev Environment..."
           # Add Dev-specific commands here
 
@@ -201,6 +205,7 @@ jobs:
       - name: Process demo environment
         if: contains(env.ENVIRONMENTS, 'demo')
         run: |
+          echo "AMI_ID in demo process=${{ env.AMI_ID }}" >> $GITHUB_ENV
           echo "currently running in Demo Environment..."
           # Add Demo-specific commands here
 
@@ -229,22 +234,4 @@ jobs:
           echo "REFRESH_ID=$REFRESH_ID" >> $GITHUB_ENV
 
           echo "Instance Refresh Started..."
-          sleep 30
-
-          while true; do
-            STATUS=$(aws autoscaling describe-instance-refreshes \
-              --auto-scaling-group-name "${{ secrets.AUTOSCALING_GROUP_NAME }}" \
-              --query "InstanceRefreshes[0].Status" \
-              --output text)
-            echo "Current Status: $STATUS"
-            if [ "$STATUS" == "Successful" ]; then
-              echo "Instance Refresh Completed Successfully!"
-              break
-            elif [ "$STATUS" == "Failed" ]; then
-              echo "Instance Refresh Failed."
-              exit 1
-            else
-              echo "Instance Refresh In Progress... Checking again in 30 seconds."
-              sleep 30
-            fi
-          done
+          sleep
