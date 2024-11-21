@@ -23,6 +23,10 @@ router.get('/healthz', timeRequest('healthz', 'get', async (req: Request, res: R
     statsdClient.increment('health.check'); 
 }));
 
+router.get('/cicd', timeRequest('healthz', 'get', async (req: Request, res: Response) => {
+    await healthCheck(req, res); 
+    statsdClient.increment('health.check'); 
+}));
 
 router.all('/healthz', (req: Request, res: Response) => {
     logger.error(`Method ${req.method} not allowed for /healthz`);
