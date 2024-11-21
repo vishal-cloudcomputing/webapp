@@ -17,6 +17,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
       async () => User.findOne({ where: { email } }),
       'findUserByEmail' 
     );
+
     if (existingUser) {
       logger.error('Email already exists');
       res.status(400).json({ error: 'Email already exists' });
@@ -30,7 +31,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
     const token = randomUUID();
     const token_expiry = new Date(Date.now() + 2 * 60 * 1000); // 2 minutes from now
 
-    const verificationUrl = `http://${process.env.DOMAIN_NAME}/v1/user/verify?token=${token}`;
+    const verificationUrl = `${process.env.DOMIN_NAME}/v1/user/verify?token=${token}`;
     const newUser = await timeDatabaseQuery(
       async () => User.create({
         email,
@@ -43,6 +44,10 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
       }),
       'createUser' 
     );
+
+     
+
+
 
     const snsMessage = {
       email: newUser.email,
