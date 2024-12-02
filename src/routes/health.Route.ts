@@ -22,7 +22,7 @@ router.get('/healthz', timeRequest('healthz', 'get', async (req: Request, res: R
     await healthCheck(req, res); 
     statsdClient.increment('health.check'); 
 }));
-
+// This is a test for the cicd pipeline
 // router.get('/cicd', timeRequest('healthz', 'get', async (req: Request, res: Response) => {
 //     await healthCheck(req, res); 
 //     statsdClient.increment('health.check'); 
