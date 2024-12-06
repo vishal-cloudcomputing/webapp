@@ -235,4 +235,4 @@ jobs:
           echo "REFRESH_ID=$REFRESH_ID" >> $GITHUB_ENV
 
           echo "Instance Refresh Started..."
-          sleep
+          sleep 30
